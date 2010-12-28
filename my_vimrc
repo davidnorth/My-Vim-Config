@@ -1,0 +1,135 @@
+" Pathogen
+filetype off
+call pathogen#helptags()
+call pathogen#runtime_append_all_bundles()
+
+" Essential
+set nocp
+syntax on
+filetype plugin on
+filetype indent on
+
+" Vim Behaviour
+set hidden
+set autoread
+set wildmenu
+
+" Tabs/indenting
+set bs=indent,eol,start
+set shiftwidth=2 softtabstop=2
+set autoindent
+set smartindent
+set expandtab
+
+" appearance
+colorscheme molokai
+set go-=T
+set ruler
+set cursorline
+set number
+set nowrap
+set guioptions=aAce
+set guifont=Bitstream\ Vera\ Sans\ Mono:h12
+set columns=300
+
+" searching
+set incsearch
+set ignorecase
+set hlsearch
+
+" Grep with Ack
+set grepprg=ack
+command! -nargs=1 Ack grep --column <args>
+
+" cancel search matches with esc
+nnoremap <esc> :noh<return><esc>
+
+"
+" Insert Mode Mappings
+"
+" Leave insert mode without moving cursor back
+imap <esc> <esc>`^
+imap <D-j> <esc>`^
+nmap <D-j> <esc>
+vmap <D-j> <esc>
+
+" 'Kill' rest of the line
+imap <C-K> <esc>Da
+
+
+"
+" Normal Mode Mappings
+"
+"
+" insert a line break at cursor position in normal mode
+nmap <C-b> i<Return><esc>
+
+" Make Y behave like D,C etc.
+nnoremap Y y$
+
+" Move a line up or down
+map <C-Down> ddp
+map <C-Up> dd<Up>P
+
+" Insert a blank line without entering insert mode
+map <S-Enter> O<Esc>
+map <CR> o<Esc>
+
+" So that paragraph movement or text objects work
+" and just tidying up trailing whitespace
+command! CleanUpWhitespace silent! %s/\s\+$//g
+au! BufRead * CleanUpWhitespace
+au! BufWritePre * CleanUpWhitespace
+
+command! TidyHtml %!tidy -iq
+
+command! BallClose bufdo Bclose!
+
+" autocmd FileType ruby set omnifunc=rubycomplete#Complete
+
+"
+" Plugin settings
+"
+let g:xptemplate_key = '<D-k>'
+let g:xptemplate_brace_complete = '0'
+
+
+" Add text object for line (l) - from first to last non-whitespace character
+" to last character in line
+vnoremap al <esc>^v$h
+omap al :normal val<CR>
+
+
+autocmd FileType eruby let b:surround_114 = "<%= \r %>"
+
+
+map <Leader>nt :NERDTreeToggle<CR>
+
+" Faster window resizing
+nnoremap <C-w>< <C-w>10<
+nnoremap <C-w>> <C-w>10>
+
+let Tlist_Ctags_Cmd="/usr/local/bin/ctags"
+
+nnoremap <Leader>j <C-j>
+
+let Tlist_Show_One_File = 1
+
+
+let Tlist_Use_Right_Window = 1
+let Tlist_Enable_Fold_Column = 0
+let Tlist_WinWidth = 35
+
+" allow command line editing like emacs
+cnoremap <C-A>      <Home>
+cnoremap <C-B>      <Left>
+cnoremap <C-E>      <End>
+cnoremap <C-F>      <Right>
+cnoremap <C-N>      <End>
+cnoremap <C-P>      <Up>
+cnoremap <ESC>b     <S-Left>
+cnoremap <ESC><C-B> <S-Left>
+cnoremap <ESC>f     <S-Right>
+cnoremap <ESC><C-F> <S-Right>
+cnoremap <ESC><C-H> <C-W>
+
