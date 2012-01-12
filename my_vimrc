@@ -9,10 +9,15 @@ syntax on
 filetype plugin on
 filetype indent on
 
+" Change map leader and reduce timeout to make "," still usable
+let mapleader = ","
+set timeoutlen=500
+
 " Vim Behaviour
 set hidden
 set autoread
 set wildmenu
+set vb
 
 " Tabs/indenting
 set bs=indent,eol,start
@@ -21,21 +26,32 @@ set autoindent
 set smartindent
 set expandtab
 
+map <Tab> >>
+map <S-Tab> v<gv<ESC>0I<ESC>l
+imap <S-Tab> <ESC>v<gv<ESC>0I
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
+
+
 " appearance
+set columns=300
 colorscheme molokai
+" or pyte , molokai , autumn , dante
 set go-=T
 set ruler
 set cursorline
 set number
 set nowrap
-set guioptions=aAce
+set guioptions=ce
 set guifont=Bitstream\ Vera\ Sans\ Mono:h12
-set columns=300
+set laststatus=2 statusline=%02n:\ %<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 " searching
 set incsearch
 set ignorecase
 set hlsearch
+
+
 
 " Grep with Ack
 set grepprg=ack
@@ -61,8 +77,6 @@ imap <C-K> <esc>Da
 " Normal Mode Mappings
 "
 "
-" insert a line break at cursor position in normal mode
-nmap <C-b> i<Return><esc>
 
 " Make Y behave like D,C etc.
 nnoremap Y y$
@@ -83,14 +97,16 @@ au! BufWritePre * CleanUpWhitespace
 
 command! TidyHtml %!tidy -iq
 
-command! BallClose bufdo Bclose!
+command! Bcloseall bufdo Bclose!
+
+
 
 " autocmd FileType ruby set omnifunc=rubycomplete#Complete
 
 "
 " Plugin settings
 "
-let g:xptemplate_key = '<D-k>'
+" let g:xptemplate_key = '<D-k>'
 let g:xptemplate_brace_complete = '0'
 
 
@@ -103,33 +119,96 @@ omap al :normal val<CR>
 autocmd FileType eruby let b:surround_114 = "<%= \r %>"
 
 
-map <Leader>nt :NERDTreeToggle<CR>
+map <Leader>nt :NERDTree<CR>
+map <Leader>ntc :NERDTreeClose<CR>
+
+map <Leader>cc :CoffeeCompile<CR>
+
+" Move current line to the bottom of the file and return to current position
+map <Leader>mb :m$<CR>'.
+" Move current line to top
+map <Leader>mt :m0<CR>
+
 
 " Faster window resizing
 nnoremap <C-w>< <C-w>10<
 nnoremap <C-w>> <C-w>10>
 
+
+" nnoremap <Leader>j <C-j>
+
+" TagList
 let Tlist_Ctags_Cmd="/usr/local/bin/ctags"
-
-nnoremap <Leader>j <C-j>
-
 let Tlist_Show_One_File = 1
-
-
 let Tlist_Use_Right_Window = 1
 let Tlist_Enable_Fold_Column = 0
 let Tlist_WinWidth = 35
+nnoremap <Leader>tl :TlistToggle<CR>
 
-" allow command line editing like emacs
-cnoremap <C-A>      <Home>
-cnoremap <C-B>      <Left>
-cnoremap <C-E>      <End>
-cnoremap <C-F>      <Right>
-cnoremap <C-N>      <End>
-cnoremap <C-P>      <Up>
-cnoremap <ESC>b     <S-Left>
-cnoremap <ESC><C-B> <S-Left>
-cnoremap <ESC>f     <S-Right>
-cnoremap <ESC><C-F> <S-Right>
-cnoremap <ESC><C-H> <C-W>
 
+" Editing .vimrc
+nnoremap <Leader>ve :e ~/.vimrc<CR>
+nnoremap <Leader>vs :so ~/.vimrc<CR>
+
+" FuzzyFinder
+nnoremap <Leader>ft :FufTag<CR>
+nnoremap <Leader>fb :FufBuffer<CR>
+
+" Command-t
+let g:CommandTMaxHeight=10
+let g:CommandTMatchWindowAtTop=1
+nmap <silent> <leader>tt :CommandT<CR>
+
+" Yankring
+nnoremap <Leader>ys :YRShow<CR>
+
+" Visuall, select the text that was last edited/pasted
+nmap gV `[v`]
+
+" Edit a file in the same directory as the current window's file
+map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
+
+" autocmd InsertEnter * hi CursorLine guibg=#222233
+" autocmd InsertLeave * hi CursorLine guibg=#2E2D22
+
+" nnoremap <Space> /
+nnoremap <Space> i<Space><esc>r
+nnoremap <S-Space> a<Space><esc>r
+
+" Always use 'q' for macro register so make replaying easier
+nnoremap Q @q
+
+" Maintain selection when shifting text left or right
+vnoremap > >gv
+vnoremap < <gv
+
+" Delete empty lines in selection
+vnoremap <leader>de :v/./d<Cr>:noh<Cr>
+
+
+" Single spaces (delete doubles not including indent)
+nnoremap <leader>ss :s/\([^ ]\) \+/\1 /g<Cr>:noh<Cr>
+vnoremap <leader>ss :s/\([^ ]\) \+/\1 /g<Cr>:noh<Cr>
+
+
+
+" Buffers
+nnoremap <Leader>bc :Bclose!<Cr>
+
+
+" au BufWritePost *.coffee silent CoffeeMake!
+"
+"
+" [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+
+nmap <leader>tw :ToggleWord<CR>
+
+
+" Should speed up autocomplete a lot for some projects
+" http://stackoverflow.com/questions/2169645/vims-autocomplete-is-excruciatingly-slow
+set complete-=i
+
+
+
+command! FormatXML silent! 1,$!xmllint --format --recover - 2>/dev/null
